@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Bank details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+        font-family: sans-serif;
+    }
+
+    body {
+        background-image: url('bc3.jpeg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: -1;
+    }
+
+    .main {
+        flex-basis: 400px;
+        height: max-content;
+        background-color: #ffffff78;
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+    }
+
+    .main h3 {
+        padding: 20px 10px 10px 20px;
+        font-size: 30px;
+        align-self: center;
+        -webkit-text-stroke: rgb(0, 0, 0) 0.5px;
+        font-weight: bold;
+        color: rgb(210, 248, 255);
+    }
+
+    .main form {
+        padding: 20px;
+    }
+
+    .form-outer label {
+        display: block;
+    }
+
+    .form-outer input {
+        width: 100%;
+        height: 35px;
+    }
+
+    .form-outer button {
+        padding: 10px 0px;
+        width: 100%;
+        background-color: rgb(0, 0, 114);
+        color: rgb(226, 226, 226);
+        font-size: 20px;
+        cursor: pointer;
+        border-radius: 25px;
+        transition: 0.3s;
+    }
+
+    .form-outer button:hover {
+        background-color: rgb(0, 66, 172);
+    }
+
+    #form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+        font-weight: bold;
+        border-radius: 10px;
+    }
+
+    #main-heading {
+        position: fixed;
+        top: 20px;
+        left: 41%;
+        font-weight: bolder;
+        font-size: 1.5rem;
+        color: white;
+        -webkit-text-stroke: 0.3px black;
+    }
+
+    input {
+        border-radius: 5px;
+    }
+
+    @media (max-width: 500px) {
+        #main-heading {
+            left: 20%;
+            margin-top: 20px;
+        }
+    }
+</style>
+</head>
+<body>
+<div id="main-heading">3 Star Earth Movers</div>
+<div class="main">
+    <h3>Bank details</h3>
+    <form method="post" id="form">
+        <div id="res" style="color:green;font-size:14px;"></div>
+        <div class="form-outer">
+            <label>Name</label>
+            <input type="text" name="name">
+        </div>
+        <div class="form-outer">
+            <label>Account number</label>
+            <input type="text" name="cft">
+        </div>
+        <!-- Remove the input field for number plate -->
+        <div class="form-outer">
+            <button name="btn">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let url = 'https://script.google.com/macros/s/AKfycbx8xnGY1k7cXmeg0vge-90WETBH07s6la1bqne0GLSFswtfUTIBkHZMEHDBu_65N_3pvA/exec'
+    let form = document.querySelector('#form');
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        // Get geolocation information
+        navigator.geolocation.getCurrentPosition((position) => {
+            let latitude = position.coords.latitude;
+            let longitude = position.coords.longitude;
+
+            // Prepare form data
+            let formData = new FormData(form);
+            formData.append("latitude", latitude);
+            formData.append("longitude", longitude);
+
+            // Confirmation message
+            let name = formData.get('name');
+            let cft = formData.get('cft');
+
+
+            // Display loading message
+            e.target.btn.innerHTML = "Submitting...";
+
+            // Submit form data
+            fetch(url, {
+                method: "POST",
+                body: formData
+            }).then((res) => res.text())
+              .then((finalRes) => {
+                e.target.btn.innerHTML = "Submit";
+                document.getElementById("res").innerHTML = finalRes;
+                form.reset();
+                setTimeout(() => {
+                    document.getElementById("res").innerHTML = "";
+                }, 5000);
+                console.log(finalRes);
+            });
+        }, (error) => {
+            console.error(error);
+            alert("Unable to retrieve location information.");
+        });
+    });
+</script>
+</body>
+</html>
